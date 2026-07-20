@@ -1,0 +1,31 @@
+import asyncio
+import os
+
+from aiogram import Bot, Dispatcher
+from dotenv import load_dotenv
+
+from database.database import create_database
+
+from handlers.start import router as start_router
+from handlers.profile import router as profile_router
+from handlers.trial import router as trial_router
+
+load_dotenv()
+
+TOKEN = os.getenv("BOT_TOKEN")
+
+bot = Bot(token=TOKEN)
+dp = Dispatcher()
+
+dp.include_router(start_router)
+dp.include_router(profile_router)
+dp.include_router(trial_router)
+
+
+async def main():
+    await create_database()
+    await dp.start_polling(bot)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
