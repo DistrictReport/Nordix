@@ -8,7 +8,6 @@ router = Router()
 
 @router.message(F.text == "🎁 Бесплатно (1 день)")
 async def trial(message: Message):
-
     result = await activate_trial(
         message.from_user.id
     )
@@ -22,11 +21,14 @@ async def trial(message: Message):
         "Срок действия: 1 день."
     )
 
+    # Конфигурационный файл WireGuard
     await message.answer_document(
-        FSInputFile(result["config"])
+        FSInputFile(result["config"]),
+        caption="📄 Конфигурационный файл WireGuard."
     )
 
-    await message.answer_photo(
+    # QR-код (SVG отправляем как документ)
+    await message.answer_document(
         FSInputFile(result["qr"]),
         caption="📷 QR-код для быстрого подключения WireGuard."
     )
