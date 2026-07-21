@@ -6,16 +6,14 @@ main_menu = ReplyKeyboardMarkup(
             KeyboardButton(text="🚀 Подключиться")
         ],
         [
-            KeyboardButton(text="👤 Профиль"),
-            KeyboardButton(text="💎 Подписка")
+            KeyboardButton(text="👤 Профиль")
         ],
         [
             KeyboardButton(text="🌍 Серверы"),
             KeyboardButton(text="🎁 Бесплатно (1 день)")
         ],
         [
-            KeyboardButton(text="⚙️ Настройки"),
-            KeyboardButton(text="❓ Поддержка")
+            KeyboardButton(text="📢 Наш канал")
         ]
     ],
     resize_keyboard=True
