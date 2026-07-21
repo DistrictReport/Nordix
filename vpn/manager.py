@@ -37,18 +37,13 @@ class VPNManager:
         temp_dir.mkdir(exist_ok=True)
 
         config_path = temp_dir / f"{client['id']}.conf"
-        qr_path = temp_dir / f"{client['id']}.svg"
 
         config = self.api.download_config(client["id"])
         config_path.write_text(config, encoding="utf-8")
 
-        qr = self.api.download_qr(client["id"])
-        qr_path.write_bytes(qr)
-
         return {
             "client": client,
             "config": config_path,
-            "qr": qr_path,
         }
 
     def delete_client(self, client_id: str):

@@ -86,11 +86,30 @@ async def set_trial_activated(
     await db.close()
 
 
+async def reset_trial(telegram_id: int):
+    db = await get_db()
+
+    await db.execute(
+        """
+        UPDATE users
+        SET trial_activated_at = NULL
+        WHERE telegram_id = ?
+        """,
+        (telegram_id,)
+    )
+
+    await db.commit()
+    await db.close()
+
+
 async def delete_user(telegram_id: int):
     db = await get_db()
 
     await db.execute(
-        "DELETE FROM users WHERE telegram_id = ?",
+        """
+        DELETE FROM users
+        WHERE telegram_id = ?
+        """,
         (telegram_id,)
     )
 

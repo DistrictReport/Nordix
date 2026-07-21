@@ -74,6 +74,5 @@ async def activate_trial(
     return {
         "success": True,
         "config": bundle["config"],
-        "qr": bundle["qr"],
         "client": client
     }

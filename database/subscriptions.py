@@ -155,6 +155,23 @@ async def deactivate_subscription(
     await db.close()
 
 
+async def delete_subscription(
+    telegram_id: int
+):
+    db = await get_db()
+
+    await db.execute(
+        """
+        DELETE FROM subscriptions
+        WHERE telegram_id = ?
+        """,
+        (telegram_id,)
+    )
+
+    await db.commit()
+    await db.close()
+
+
 async def subscription_active(
     telegram_id: int
 ) -> bool:
