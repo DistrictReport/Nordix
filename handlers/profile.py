@@ -1,7 +1,10 @@
+from datetime import datetime, timedelta
+
 from aiogram import Router
 from aiogram.types import Message
 
 from database.users import get_user
+from database.subscriptions import get_active_subscription
 
 router = Router()
 
@@ -15,17 +18,49 @@ async def profile(message: Message):
         await message.answer("❌ Пользователь не найден.")
         return
 
-    telegram_id, username, first_name, is_trial, subscription_until, created_at = user
-
-    trial_status = "✅ Активен" if is_trial else "❌ Использован"
-
-    subscription = (
-        subscription_until
-        if subscription_until
-        else "Нет активной подписки"
+    subscription = await get_active_subscription(
+        message.from_user.id
     )
 
+    telegram_id = user["telegram_id"]
+    username = user["username"]
+    first_name = user["first_name"]
+    trial_activated_at = user["trial_activated_at"]
+    created_at = user["created_at"]
+
+    # Пробный период
+    if trial_activated_at:
+        expires = (
+            datetime.fromisoformat(trial_activated_at)
+            + timedelta(days=1)
+        )
+
+        if expires > datetime.now():
+            trial_status = (
+                f"✅ До {expires.strftime('%d.%m.%Y %H:%M')}"
+            )
+        else:
+            trial_status = "❌ Истёк"
+    else:
+        trial_status = "❌ Не использован"
+
+    # Подписка
+    if subscription:
+        expires = datetime.fromisoformat(
+            subscription["expires_at"]
+        )
+
+        subscription_text = (
+            f"✅ До {expires.strftime('%d.%m.%Y %H:%M')}"
+        )
+    else:
+        subscription_text = "❌ Нет активной подписки"
+
     username = f"@{username}" if username else "Не указан"
+
+    created = datetime.fromisoformat(
+        created_at
+    ).strftime("%d.%m.%Y %H:%M")
 
     await message.answer(
         f"""
@@ -37,13 +72,14 @@ async def profile(message: Message):
 
 📛 Username: {username}
 
-🎁 Пробный период: {trial_status}
+🎁 Пробный период:
+{trial_status}
 
 💎 Подписка:
-{subscription}
+{subscription_text}
 
 📅 Регистрация:
-{created_at}
+{created}
 """,
         parse_mode="HTML"
     )

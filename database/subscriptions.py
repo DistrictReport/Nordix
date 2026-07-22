@@ -45,6 +45,25 @@ async def get_active_subscription(telegram_id: int):
     return subscription
 
 
+async def get_all_active_subscriptions():
+    db = await get_db()
+
+    cursor = await db.execute(
+        """
+        SELECT *
+        FROM subscriptions
+        WHERE is_active = 1
+        """
+    )
+
+    subscriptions = await cursor.fetchall()
+
+    await cursor.close()
+    await db.close()
+
+    return subscriptions
+
+
 async def create_subscription(
     telegram_id: int,
     tariff: str,

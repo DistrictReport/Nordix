@@ -14,6 +14,8 @@ from handlers.servers import router as servers_router
 from handlers.channel import router as channel_router
 from handlers.subscription import router as subscription_router
 
+from services.subscription_checker import subscription_checker
+
 load_dotenv()
 
 TOKEN = os.getenv("BOT_TOKEN")
@@ -32,6 +34,11 @@ dp.include_router(subscription_router)
 
 async def main():
     await create_database()
+
+    # Запускаем фоновую проверку подписок
+    asyncio.create_task(subscription_checker())
+
+    # Запускаем бота
     await dp.start_polling(bot)
 
 

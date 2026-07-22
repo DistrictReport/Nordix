@@ -94,6 +94,24 @@ async def update_device_status(
     await db.close()
 
 
+async def deactivate_all_devices(
+    telegram_id: int
+):
+    db = await get_db()
+
+    await db.execute(
+        """
+        UPDATE devices
+        SET is_active = 0
+        WHERE telegram_id = ?
+        """,
+        (telegram_id,)
+    )
+
+    await db.commit()
+    await db.close()
+
+
 async def delete_device(client_id: str):
     db = await get_db()
 
