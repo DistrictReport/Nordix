@@ -12,6 +12,7 @@ from handlers.trial import router as trial_router
 from handlers.admin import router as admin_router
 from handlers.servers import router as servers_router
 from handlers.channel import router as channel_router
+from handlers.subscription import router as subscription_router
 
 load_dotenv()
 
@@ -26,6 +27,7 @@ dp.include_router(profile_router)
 dp.include_router(trial_router)
 dp.include_router(servers_router)
 dp.include_router(channel_router)
+dp.include_router(subscription_router)
 
 
 async def main():
