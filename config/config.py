@@ -4,14 +4,23 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# =========================
 # Telegram
+# =========================
+
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
+# =========================
 # WG-Easy API
+# =========================
+
 WG_API_URL = os.getenv("WG_API_URL")
 WG_PASSWORD = os.getenv("WG_PASSWORD")
 
+# =========================
 # WireGuard
+# =========================
+
 WG_HOST = os.getenv("WG_HOST")
 WG_PORT = int(os.getenv("WG_PORT", "51820"))
 
@@ -22,3 +31,11 @@ WG_MTU = int(os.getenv("WG_MTU", "1420"))
 WG_PERSISTENT_KEEPALIVE = int(
     os.getenv("WG_PERSISTENT_KEEPALIVE", "25")
 )
+
+# =========================
+# LAVA API
+# =========================
+
+LAVA_API_KEY = os.getenv("LAVA_API_KEY")
+LAVA_API_URL = os.getenv("LAVA_API_URL")
+LAVA_OFFER_ID = os.getenv("LAVA_OFFER_ID")
