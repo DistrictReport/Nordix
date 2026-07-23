@@ -1,6 +1,7 @@
 import asyncio
 import os
 
+from aiohttp import web
 from aiogram import Bot, Dispatcher
 from dotenv import load_dotenv
 
@@ -15,6 +16,7 @@ from handlers.channel import router as channel_router
 from handlers.subscription import router as subscription_router
 
 from services.subscription_checker import subscription_checker
+from webhooks.lava import create_app
 
 load_dotenv()
 
@@ -32,13 +34,31 @@ dp.include_router(channel_router)
 dp.include_router(subscription_router)
 
 
+async def start_webhook():
+    app = create_app()
+
+    runner = web.AppRunner(app)
+    await runner.setup()
+
+    site = web.TCPSite(
+        runner,
+        host="0.0.0.0",
+        port=8080
+    )
+
+    await site.start()
+
+    print("✅ LAVA Webhook запущен:")
+    print("http://0.0.0.0:8080/lava/webhook")
+
+
 async def main():
     await create_database()
 
-    # Запускаем фоновую проверку подписок
     asyncio.create_task(subscription_checker())
 
-    # Запускаем бота
+    await start_webhook()
+
     await dp.start_polling(bot)
 
 
