@@ -42,7 +42,7 @@ async def create_database():
         await db.execute("""
         CREATE TABLE IF NOT EXISTS subscriptions(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            telegram_id INTEGER NOT NULL,
+            telegram_id INTEGER UNIQUE NOT NULL,
             tariff TEXT NOT NULL,
             is_trial INTEGER DEFAULT 0,
             expires_at TEXT,
@@ -57,10 +57,12 @@ async def create_database():
         CREATE TABLE IF NOT EXISTS payments(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             telegram_id INTEGER NOT NULL,
+            invoice_id TEXT UNIQUE,
+            tariff TEXT,
             amount REAL NOT NULL,
             provider TEXT,
             payment_id TEXT,
-            status TEXT,
+            status TEXT DEFAULT 'pending',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (telegram_id) REFERENCES users(telegram_id)
         )

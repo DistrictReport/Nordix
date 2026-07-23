@@ -8,6 +8,7 @@ from aiogram.types import (
 
 from keyboards.subscription import subscription_keyboard
 from payments.lava import lava, LavaAPIError
+from database.payments import create_payment
 
 router = Router()
 
@@ -22,24 +23,52 @@ async def subscription_menu(message: Message):
 
 
 TARIFFS = {
-    "buy_1": ("1 месяц", 100),
-    "buy_3": ("3 месяца", 270),
-    "buy_6": ("6 месяцев", 500),
-    "buy_12": ("12 месяцев", 900),
+    "buy_1": {
+        "name": "1 месяц",
+        "months": 1,
+        "price": 100,
+    },
+    "buy_3": {
+        "name": "3 месяца",
+        "months": 3,
+        "price": 270,
+    },
+    "buy_6": {
+        "name": "6 месяцев",
+        "months": 6,
+        "price": 500,
+    },
+    "buy_12": {
+        "name": "12 месяцев",
+        "months": 12,
+        "price": 900,
+    },
 }
 
 
 @router.callback_query(F.data.in_(TARIFFS.keys()))
 async def buy_subscription(callback: CallbackQuery):
-    tariff_name, amount = TARIFFS[callback.data]
+    tariff = TARIFFS[callback.data]
+
+    telegram_id = callback.from_user.id
 
     try:
         invoice = await lava.create_invoice(
-            email="test@test.ru",  # позже заменим на email пользователя
-            amount=amount,
+            telegram_id=telegram_id,
+            tariff=callback.data,
+            email="test@test.ru",
+            amount=tariff["price"],
         )
 
+        invoice_id = invoice["id"]
         payment_url = invoice["paymentUrl"]
+
+        await create_payment(
+            telegram_id=telegram_id,
+            invoice_id=invoice_id,
+            tariff=callback.data,
+            amount=tariff["price"],
+        )
 
         keyboard = InlineKeyboardMarkup(
             inline_keyboard=[
@@ -54,11 +83,11 @@ async def buy_subscription(callback: CallbackQuery):
 
         await callback.message.answer(
             f"""
-<b>💎 Тариф:</b> {tariff_name}
+<b>💎 Тариф:</b> {tariff["name"]}
 
-<b>💰 Стоимость:</b> {amount} ₽
+<b>💰 Стоимость:</b> {tariff["price"]} ₽
 
-Нажмите кнопку ниже для оплаты.
+После успешной оплаты подписка активируется автоматически.
 """,
             parse_mode="HTML",
             reply_markup=keyboard,

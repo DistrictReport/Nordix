@@ -1,4 +1,5 @@
 import asyncio
+import json
 
 from payments.lava import lava
 
@@ -9,7 +10,7 @@ async def main():
         amount=100,
     )
 
-    print(invoice)
+    print(json.dumps(invoice, indent=4, ensure_ascii=False))
 
 
 asyncio.run(main())

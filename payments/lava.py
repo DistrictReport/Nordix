@@ -24,17 +24,15 @@ class LavaClient:
         self,
         email: str,
         amount: float,
+        telegram_id: int | None = None,
+        tariff: str | None = None,
     ) -> dict:
         payload = {
             "email": email,
             "offerId": LAVA_OFFER_ID,
             "currency": "RUB",
             "amount": amount,
-
-            # Используем провайдера PAY2ME
             "paymentProvider": "PAY2ME",
-
-            # Способ оплаты — СБП
             "paymentMethod": "SBP",
         }
 

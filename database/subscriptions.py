@@ -76,7 +76,7 @@ async def create_subscription(
 
     await db.execute(
         """
-        INSERT INTO subscriptions(
+        INSERT OR REPLACE INTO subscriptions(
             telegram_id,
             tariff,
             is_trial,
