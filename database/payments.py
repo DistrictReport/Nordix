@@ -98,3 +98,22 @@ async def payment_exists(invoice_id: str):
     await db.close()
 
     return payment is not None
+
+
+async def get_payment_by_contract(contract_id: str):
+    db = await get_db()
+
+    cursor = await db.execute(
+        """
+        SELECT *
+        FROM payments
+        WHERE payment_id = ?
+        """,
+        (contract_id,),
+    )
+
+    payment = await cursor.fetchone()
+
+    await db.close()
+
+    return payment

@@ -1,9 +1,7 @@
 import asyncio
-import os
 
 from aiohttp import web
-from aiogram import Bot, Dispatcher
-from dotenv import load_dotenv
+from aiogram import Dispatcher
 
 from database.database import create_database
 
@@ -18,11 +16,9 @@ from handlers.subscription import router as subscription_router
 from services.subscription_checker import subscription_checker
 from webhooks.lava import create_app
 
-load_dotenv()
+from bot_instance import bot
 
-TOKEN = os.getenv("BOT_TOKEN")
 
-bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
 dp.include_router(admin_router)

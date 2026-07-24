@@ -1,15 +1,38 @@
+import json
+import traceback
 from aiohttp import web
 
 
 async def lava_webhook(request: web.Request):
-    data = await request.json()
+    print("\n" + "=" * 70)
+    print("🔥 LAVA WEBHOOK")
 
-    print("=" * 50)
-    print("LAVA WEBHOOK")
-    print(data)
-    print("=" * 50)
+    try:
+        body = await request.text()
 
-    return web.json_response({"status": "ok"})
+        print("RAW BODY:")
+        print(body)
+
+        try:
+            data = json.loads(body)
+
+            print("\nJSON:")
+            print(json.dumps(data, indent=4, ensure_ascii=False))
+
+        except Exception:
+            print("\nНе JSON")
+            print(body)
+
+    except Exception:
+        traceback.print_exc()
+
+    print("=" * 70 + "\n")
+
+    return web.json_response(
+        {
+            "status": "ok"
+        }
+    )
 
 
 def create_app():
