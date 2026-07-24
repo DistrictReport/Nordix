@@ -19,6 +19,17 @@ async def lava_webhook(request: web.Request):
             print("\nJSON:")
             print(json.dumps(data, indent=4, ensure_ascii=False))
 
+            email = data.get("buyer", {}).get("email")
+
+            if email:
+                try:
+                    telegram_id = int(email.split("@")[0])
+                    print(f"\n✅ TELEGRAM ID = {telegram_id}")
+                except Exception:
+                    print("\n❌ Не удалось извлечь Telegram ID")
+            else:
+                print("\n❌ EMAIL NOT FOUND")
+
         except Exception:
             print("\nНе JSON")
             print(body)

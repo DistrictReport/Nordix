@@ -56,7 +56,7 @@ async def buy_subscription(callback: CallbackQuery):
         invoice = await lava.create_invoice(
             telegram_id=telegram_id,
             tariff=callback.data,
-            email="test@test.ru",
+            email=f"{telegram_id}@nordix.local",
             amount=tariff["price"],
         )
 

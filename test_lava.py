@@ -6,7 +6,7 @@ from payments.lava import lava
 
 async def main():
     invoice = await lava.create_invoice(
-        email="test@test.ru",
+        email="123456789@nordix.local",
         amount=100,
     )
 
